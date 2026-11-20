@@ -1,0 +1,22 @@
+<!doctype html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClipForge</title><style>
+body{background:#0b1020;color:#eee;font-family:system-ui;margin:0;padding:24px}main{max-width:700px;margin:auto}
+.box{background:#141c31;padding:24px;border:1px solid #344362;border-radius:18px}h1{color:#a99cff}
+input,select,button{padding:12px;margin:8px 0;background:#0d162a;color:white;border:1px solid #344362;border-radius:10px}
+button{background:#7667f6;cursor:pointer}li{margin:12px 0}a{color:#b5adff}
+</style></head><body><main><h1>✦ ClipForge</h1><p>Apni video se chhote vertical clips banayein.</p>
+<div class="box"><form id="f"><label>Video file<br><input type="file" name="video" accept="video/*" required></label><br>
+<label>Clip duration<br><select name="length"><option>30</option><option>60</option><option>90</option></select> seconds</label><br>
+<label>Number of clips<br><select name="count"><option>3</option><option>5</option><option>10</option></select></label><br>
+<button type="submit">Create clips</button></form><p id="status"></p><ul id="results"></ul></div>
+<p><small>Clips are sampled evenly across the video (not AI-selected highlights yet). Use videos you own or have permission to process.</small></p>
+<script>
+document.getElementById('f').addEventListener('submit',async e=>{
+ e.preventDefault();let s=document.getElementById('status'),r=document.getElementById('results');
+ s.textContent='Processing video…';r.innerHTML='';
+ try{let d=new FormData(e.target),res=await fetch('/api/clips',{method:'POST',body:d});
+ let j=await res.json();if(!res.ok)throw Error(j.error||'Processing failed');
+ s.textContent='Clips ready:';j.clips.forEach(c=>{let li=document.createElement('li');let a=document.createElement('a');a.href=c.url;a.textContent='Download '+c.name;a.download='';li.appendChild(a);r.appendChild(li)});
+ }catch(err){s.textContent='Error: '+err.message}
+});
+</script></main></body></html>
